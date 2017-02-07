@@ -57,6 +57,14 @@ class librerias
         return $res;
     }
 
+    public static function setPeriodoText($periodo){
+        //Formatear periodo a AAA-XXXX
+        $anio=substr($periodo, 0,4);
+        $mes=substr($periodo,4,2) *1;
+        $meses = config('option.mesesCorto');
+        $periodotext= $meses[$mes].  '-'.$anio;
+        return $periodotext;
+    }
 
 
 }

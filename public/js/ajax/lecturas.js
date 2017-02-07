@@ -3,7 +3,7 @@
  * Script para administrar el ingreso  de las lecturas
  */
 $(function(){
-    var estadoIng='<span class="label label-success">Ingresado</span>' ;
+    var estadoIng='<span class="label label-success estado">Ingresado</span>' ;
 
     $('#body').delegate('.lectura','focusout', function(){
         var tr=$(this).parent().parent();
@@ -12,7 +12,30 @@ $(function(){
         }
     });
 
-    $('.detalle').tabIndex=-1;
+    $('.detalle').tabIndex=-1; //Evita el enfoque
+
+    $('#body').delegate('.modificar', 'click', function(){
+        var tr=$(this).parent().parent().parent().parent().parent();
+        var lec = tr.find('.lectura');
+        swal({
+                title: "Modificacion de lectura?",
+                text: "Esta a punto de modificar una lectura que ya fue facturada, por lo que podrian ver afectado la facturacion!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, modificarlos!",
+                cancelButtonText: "No, Cancelar!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    lec.prop('disabled',false);
+                    swal("Habilitado", "Puedes hacer las modificaciones pertinentes.", "success");
+                } else {
+                    swal("Cancelado", "No se haran cambios :)", "error");
+                }
+            });
+    });
 });
 
 function validarLectura(tr){
@@ -26,7 +49,9 @@ function validarLectura(tr){
     if ( !validarFormatoFecha(fechaLectura)){
         //Validamos que haya ingresado una fecha de lectura valida
         tr.find('.consumo').html("");
-        tr.find('.estado').html("");
+        if (tr.find('.estado').html()!='FACTURADA') {
+            tr.find('.estado').html("");
+        }
         tr.find('.lectura').html("");
         mensaje("Debe de ingresar una fecha de lectura", "Error", 4);
         $('#fechaLec').focus();
@@ -43,7 +68,10 @@ function validarLectura(tr){
             tr.find('.consumo').html("");
             var consumo=lecAct-lecAnt;
             tr.find('.consumo').html(consumo);
-            tr.find('.estado').html('INGRESADO');
+            if (tr.find('.estado').html()!='FACTURADA') {
+                tr.find('.estado').html('INGRESADO');
+            }
+
             tr.find('.fechaIngreso').html(fechaLectura);
             respuesta=true;
         }
@@ -58,16 +86,25 @@ function validarLectura(tr){
 
 function updateDB(tr) {
 
+    miestado=tr.find('.estado').html();
+
     //Propiedades de la lecturas
     var fechaLectura= $('#fechaLec').val();
-    var estado="I";
+    if (tr.find('.estado').html()=='FACTURADA'){
+        tr.find('.lectura').prop('disabled',true);
+        var estado=  "F";
+    }else{
+        var estado=  "I";
+    }
+
 
     var lecAct=tr.find('.lectura').val();
 
    // alert(lecAct.length);
     if (lecAct.length==0){
         lecAct=null;
-        estado="C";
+
+        estado= "C";
         fechaLectura=null;
     }
 

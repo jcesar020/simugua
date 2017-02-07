@@ -20,6 +20,7 @@ Route::get('logout', 'logController@logout');
 Route::get('test', 'TestController@index');
 
 Route::resource('usuario', 'UserController');
+Route::get('inituser', 'UserController@inituser');
 Route::resource('cliente','ClienteController');
 Route::resource('diametro', 'DiametroController');
 Route::get('diametros', 'DiametroController@listing');
@@ -37,17 +38,28 @@ get('lectura/{periodo}/{sector}/generar',['uses'=>'LecturaController@generar']);
 get('lectura/{periodo}/{sector}/validar',['uses'=>'LecturaController@validar']);
 get('lectura/{periodo}/{sector}/aprobar',['uses'=>'LecturaController@aprobar']);
 get('lectura/{periodo}/{sector}/imprimir',['uses'=> 'LecturaController@printing']);
+resource('lecturacon', 'LecturaconController');
+get('lecturascon/{id}', 'LecturaconController@listar' );
+
 
 //FACTURACION
-get('facturas/{periodo}/{sector}/facturar', 'facturaController@facturar');
-get('facturas/{periodo}/{sector}/listado', 'facturaController@listado');
-get('facturas/{periodo}/{sector}/{dia}/{mes}/{ano}/generar', 'facturaController@generar');
-//get('facturas/listar', 'facturaController@listar');
-get('facturas/imprimir', 'facturaController@imprimir');
-get('facturas/multas', 'facturaController@multas');
-get('facturas/multas/generar', 'facturaController@multasgenerar');
-get('facturas/listado', 'facturaController@listado');
-resource('facturar', 'facturarController');
+get('facturas/{periodo}/{sector}/facturar', 'facturarController@facturar');
+get('facturas/{periodo}/{sector}/listado', 'facturarController@listado');
+get('facturas/{periodo}/{sector}/{dia}/{mes}/{ano}/generar', 'facturarController@generar');
+//get('facturas/listar', 'facturarController@listar');
+get('facturas/imprimir', 'facturarController@imprimir');
+get('facturas/multas', 'facturarController@multas');
+get('facturas/multas/generar', 'facturarController@multasgenerar');
+//get('facturas/listado', 'facturarController@listado');
+resource('factura', 'facturaController');
+
+resource('facturar', 'facturarController', ['only'=>['store']]);
+get('facturar/{periodo}/{ini}', 'facturarController@printfactura');
+
+//FACTURACIONES DETALLE DE FACTURAS
+resource('facturaciones', 'FacturacionesController');
+get('facturacionescon/{id}', 'FacturacionesController@listaPorCon');
+
 resource('recibo', 'ReciboController');
 //Route::get('pdf','PdfController@invoice');
 

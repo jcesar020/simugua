@@ -49,6 +49,24 @@ class Conexion extends Model
             ->get();
     }
 
+    public static function conexion($id){
+        return DB::table('conexiones')
+            ->join('clientes','clientes.id','=','conexiones.cliente_id')
+            ->leftJoin('clientes as cl2', 'cl2.id','=', 'conexiones.clienteant_id')
+            ->join('zonas', 'zonas.id','=','conexiones.zona_id')
+            ->join('sectores', 'sectores.id','=','conexiones.sector_id')
+            ->join('grupotarifas', 'grupotarifas.id','=','conexiones.gtarifa_id')
+            ->select('conexiones.*',
+                DB::raw("CONCAT(clientes.nombre,' ', clientes.apellido) as cliente"),
+                DB::raw("CONCAT(cl2.nombre,' ', cl2.apellido) as clienteant"),
+                'zonas.zona',
+                'sectores.sector',
+                 'grupotarifas.grupo')
+            ->where('conexiones.id' , $id)
+            ->get();
+        //return null;
+    }
+
     public function setMedidorIdAttribute($valor){
 
         if(empty($valor)){

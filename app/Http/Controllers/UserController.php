@@ -36,6 +36,12 @@ class UserController extends Controller
         return view('usuario.index', compact('users'));
     }
 
+    public function inituser(){
+        $users=User::all();
+        //return $users;
+        return view('usuario.index_simple', compact('users'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -84,6 +90,13 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
+    {
+        $user= User::find($id);
+        //return $users;
+        return view('usuario.edit', ['user'=>$user]);
+    }
+
+    public function initedit($id)
     {
         $user= User::find($id);
         //return $users;
